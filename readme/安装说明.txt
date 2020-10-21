@@ -1,0 +1,9 @@
+1. 导入数据库 shop.sql
+
+2. 配置你项目下的 .env
+
+3. 配置 admin/vue.config.js
+
+4. 进入 admin 目录，npm i
+
+4. 编译 admin 目录下的后台前端Vue，生成的前端页面在 public/admin 当中
