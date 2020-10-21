@@ -4,6 +4,8 @@
 
 3. 配置 admin/vue.config.js
 
-4. 进入 admin 目录，npm i
+4. 配置 admin/.env.production
 
-4. 编译 admin 目录下的后台前端Vue，生成的前端页面在 public/admin 当中
+5. 进入 admin 目录，npm i
+
+6. 编译 admin 目录下的后台前端Vue，生成的前端页面在 public/admin 当中
