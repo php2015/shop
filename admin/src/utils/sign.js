@@ -1,7 +1,7 @@
 import { getQueryObject, param } from '@/utils'
 import md5 from 'js-md5'
 
-const secret = '45c9d4691906f50e3ed5d6713f53967c'
+const secret = '你的密钥'
 
 export default function getSign (url, params = []) {
   let paramsObj = getQueryObject(url)
