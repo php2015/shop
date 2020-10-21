@@ -34,8 +34,6 @@
 ## 关联项目
 小程序端：https://gitee.com/weitair/shop_wxapp
 
-后台前端：https://gitee.com/weitair/shop_vue
-
 ## 系统演示
 后台地址：http://demo.weitair.com
 
