@@ -898,7 +898,6 @@ DROP TABLE IF EXISTS `weitair_local_template`;
 CREATE TABLE `weitair_local_template` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `name` varchar(64) NOT NULL DEFAULT '' COMMENT '模板名称',
-  `free` tinyint(3) unsigned NOT NULL DEFAULT '10' COMMENT '是否包邮(10：不包邮、20：包邮)',
   `method` tinyint(3) unsigned NOT NULL DEFAULT '10' COMMENT '配送方式(10：按距离、20：按重量)',
   `distance` smallint(3) unsigned NOT NULL DEFAULT '10' COMMENT '最大可配送距离(Km)',
   `weight` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '最大可配送重量(Kg)',

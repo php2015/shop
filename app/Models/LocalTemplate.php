@@ -14,16 +14,11 @@ class LocalTemplate extends Model
 
     protected $fillable = [
         'name',
-        'free',
         'method',
         'distance',
         'weight',
         'sort',
     ];
-
-    // 是否包邮(10：不包邮、20：包邮)
-    const LOGISTICS_FREE_OFF = 10;
-    const LOGISTICS_FREE_ON = 20;
 
     // 计价方式(10：按距离、20：按重量)
     const METHOD_DISTANCE = 10;

@@ -285,60 +285,56 @@ class Order extends OrderModel
      */
     private function logisticsTotal(int $address)
     {
-
+        $this->logistics_fee = 0;
         $this->logistics = $address ? Address::detail($address) : Address::default();
-        if ($this->logistics) {
-            $baseSetting = Setting::getInstance('logistics.base')->fetch();
-            $freeSetting = Setting::getInstance('logistics.free')->fetch();
+        $baseSetting = Setting::getInstance('logistics.base')->fetch();
+        $freeSetting = Setting::getInstance('logistics.free')->fetch();
 
-            switch($this->logistics_method) {
-                case Setting::LOGISTICS_METHOD_EXPRESS: // 快递运费
-                    $this->expressFee();
-                    break;
-                case Setting::LOGISTICS_METHOD_LOCAL: // 同城运费
-                    $this->localFee();
-                    break;
-                case Setting::LOGISTICS_METHOD_PICKUP: // 自提无运费
-                    $this->fetchCheck();
-                    break;
-            }
+        switch($this->logistics_method) {
+            case Setting::LOGISTICS_METHOD_EXPRESS: // 快递运费
+                $this->expressFee();
+                break;
+            case Setting::LOGISTICS_METHOD_LOCAL: // 同城运费
+                $this->localFee();
+                break;
+            case Setting::LOGISTICS_METHOD_PICKUP: // 自提无运费
+                $this->fetchCheck();
+                break;
+        }
 
-            $this->total(); // 根据可配送商品合计价格
+        $this->total(); // 根据可配送商品合计价格
 
-            $quantity = 0; // 总件数
-            $logistics_fee = [];
-            foreach ($this->goods as $key => $item) {
-                $quantity += $item->quantity;
-                $logistics_fee[] = $item->logistics_fee;
-            }
+        $quantity = 0; // 总件数
+        $logistics_fee = [];
+        foreach ($this->goods as $key => $item) {
+            $quantity += $item->quantity;
+            $logistics_fee[] = $item->logistics_fee;
+        }
 
-            if ($baseSetting['freight'] == Setting::LOGISTICS_FEE_TOTAL) { // 叠加
-                $this->logistics_fee = (float) array_sum($logistics_fee);
-            } else if ($baseSetting['freight'] == Setting::LOGISTICS_FEE_MIN) { // 最低
-                $this->logistics_fee = (float) min($logistics_fee);
-            } else if ($baseSetting['freight'] == Setting::LOGISTICS_FEE_MAX) { // 最高
-                $this->logistics_fee = (float) max($logistics_fee);
-            }
+        if ($baseSetting['freight'] == Setting::LOGISTICS_FEE_TOTAL) { // 叠加
+            $this->logistics_fee = (float) array_sum($logistics_fee);
+        } else if ($baseSetting['freight'] == Setting::LOGISTICS_FEE_MIN) { // 最低
+            $this->logistics_fee = (float) min($logistics_fee);
+        } else if ($baseSetting['freight'] == Setting::LOGISTICS_FEE_MAX) { // 最高
+            $this->logistics_fee = (float) max($logistics_fee);
+        }
 
-            // 是否开启免邮活动
-            if ($freeSetting['status'] == Setting::LOGISTICS_FREE) {
-                // 满额免邮
-                if ($freeSetting['type'] == Setting::LOGISTICS_FREE_MONEY) {
-                    // 大于等于免邮金额
-                    if ($this->goods_price >= $freeSetting['limit']) {
-                        $this->logistics_fee = 0;
-                    }
-                }
-                // 满件免邮
-                else if ($freeSetting['type'] == Setting::LOGISTICS_FREE_QUANTITY) {
-                    // 大于等于免邮件数
-                    if ($quantity >= $freeSetting['limit']) {
-                        $this->logistics_fee = 0;
-                    }
+        // 是否开启免邮活动
+        if ($freeSetting['status'] == Setting::LOGISTICS_FREE) {
+            // 满额免邮
+            if ($freeSetting['type'] == Setting::LOGISTICS_FREE_MONEY) {
+                // 大于等于免邮金额
+                if ($this->goods_price >= $freeSetting['limit']) {
+                    $this->logistics_fee = 0;
                 }
             }
-        } else {
-            $this->logistics_fee = 0;
+            // 满件免邮
+            else if ($freeSetting['type'] == Setting::LOGISTICS_FREE_QUANTITY) {
+                // 大于等于免邮件数
+                if ($quantity >= $freeSetting['limit']) {
+                    $this->logistics_fee = 0;
+                }
+            }
         }
     }
 
@@ -361,9 +357,9 @@ class Order extends OrderModel
             if ($item->goods->is_express == 20) {
                 $result = ExpressTemplate::getFee(
                     $item->goods->express_template_id,
-                    $this->logistics->city,
                     $item->quantity,
-                    $weight
+                    $weight,
+                    $this->logistics
                 );
 
                 if ($result === null) {
@@ -404,9 +400,8 @@ class Order extends OrderModel
             if ($item->goods->is_local == 20) {
                 $result = LocalTemplate::getFee(
                     $item->goods->local_template_id,
-                    $this->logistics->lon,
-                    $this->logistics->lat,
-                    $weight
+                    $weight,
+                    $this->logistics
                 );
 
                 if ($result === null) {

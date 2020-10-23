@@ -6,9 +6,13 @@ use App\Models\ExpressTemplate as ExpressTemplateModel;
 
 class ExpressTemplate extends ExpressTemplateModel
 {
-    public static function getFee(int $id, string $city, int $quantity, float $weight)
+    public static function getFee(int $id, int $quantity, float $weight, $logistics)
     {
         $detail = self::detail($id);
+        if (empty($logistics) || $detail->free == self::LOGISTICS_FREE_ON) {
+            return 0;
+        }
+
         $rule = null;
         foreach($detail->item as $item) {
             $list = json_decode($item->region, true);
@@ -21,7 +25,7 @@ class ExpressTemplate extends ExpressTemplateModel
                 }
             }
             // 是否在配送范围
-            if (in_array($city, $citys)) {
+            if (in_array($logistics->city, $citys)) {
                 $rule = $item;
             }
         }
@@ -48,7 +52,6 @@ class ExpressTemplate extends ExpressTemplateModel
             }
         }
         return $rule->first_fee + $additional_fee;
-
     }
 
     public static function detail(int $id)

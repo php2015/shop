@@ -60,12 +60,6 @@
         </template>
       </el-table-column> -->
       <el-table-column prop="name" label="模板名称" />
-      <el-table-column label="是否包邮" align="center">
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.free == 10" type="info" effect="dark">不包邮</el-tag>
-          <el-tag v-if="scope.row.free == 20" type="success" effect="dark">包邮</el-tag>
-        </template>
-      </el-table-column>
       <el-table-column label="计价方式" align="center">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.method == 10" type="primary" effect="dark">按距离</el-tag>

@@ -18,6 +18,11 @@ class Ali extends Server
     public function send(string $phoneNumber, array $content)
     {
         try {
+            // 手机号
+            if (empty($phoneNumber)) {
+                return false;
+            }
+
             // 是否开启了全局短信设置
             if ($this->config['status'] != Setting::SMS) {
                 return false;

@@ -6,10 +6,14 @@ use App\Models\LocalTemplate as LocalTemplateModel;
 
 class LocalTemplate extends LocalTemplateModel
 {
-    public static function getFee(int $id, float $userLon, float $userLat, float $weight)
+    public static function getFee(int $id, float $weight, $logistics)
     {
-        $distance = StoreAddress::getShipmentMinDistance($userLon, $userLat);
+        if (empty($logistics) ) {
+            return 0;
+        }
+
         $detail = self::detail($id);
+        $distance = StoreAddress::getShipmentMinDistance($logistics->lon, $logistics->lat);
         $total = $detail->method == 10 ? $distance : $weight;
         $result = null;
         foreach($detail->item as $item) {

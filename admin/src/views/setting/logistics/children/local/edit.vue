@@ -5,56 +5,48 @@
         <el-form-item label="模板名称" prop="name">
           <el-input v-model.trim="form.name" clearable placeholder="模板名称" style="width:100%" />
         </el-form-item>
-        <el-form-item label="是否包邮" prop="free">
-          <el-radio-group v-model="form.free">
-            <el-radio-button :label="10">不包邮</el-radio-button>
-            <el-radio-button :label="20">包邮</el-radio-button>
+        <el-form-item label="计价方式" prop="method">
+          <el-radio-group v-model="form.method">
+            <el-radio-button :label="10">按距离</el-radio-button>
+            <el-radio-button :label="20">按重量</el-radio-button>
           </el-radio-group>
         </el-form-item>
-        <section v-if="form.free == 10">
-          <el-form-item label="计价方式" prop="method">
-            <el-radio-group v-model="form.method">
-              <el-radio-button :label="10">按距离</el-radio-button>
-              <el-radio-button :label="20">按重量</el-radio-button>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item v-if="form.method == 20" label="最大可配送距离" prop="distance">
-            <el-input-number v-model="form.distance" :min="0" size="mini" /> km
-          </el-form-item>
-          <el-form-item v-if="form.method == 10" label="最大可配送重量" prop="weight">
-            <el-input-number v-model="form.weight" :precision="2" :min="0" size="mini" /> kg
-          </el-form-item>
-          <el-form-item prop="item">
-            <div style="overflow-x: auto;">
-              <table class="stock-table" cellspacing="0" cellpadding="0">
-                <thead>
-                  <tr>
-                    <th style="min-width: 300px;">规则</th>
-                    <th style="min-width: 100px;">操作</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(item, index) in form.item" :key="index">
-                    <td>
-                      {{ item.min }} ≤ {{ form.method == 10 ? 'd' : 'w' }} ≤
-                      <el-input-number v-model="item.max" :precision="form.method == 10 ? 0 : 2" :min="0" size="mini" />
-                      {{ form.method == 10 ? 'km' : 'kg' }}，收取配送费
-                      <el-input-number v-model="item.fee" :precision="2" :min="0" size="mini" /> 元
-                    </td>
-                    <td>
-                      <span v-if="index != 0" style="font-size: 20px; cursor: pointer;" @click="removeRow(index)">
-                        <i class="el-icon-delete" />
-                      </span>
-                      <span v-else style="font-size: 20px; cursor: pointer;" @click="addRow()">
-                        <i class="el-icon-circle-plus-outline" />
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </el-form-item>
-        </section>
+        <el-form-item v-if="form.method == 20" label="最大可配送距离" prop="distance">
+          <el-input-number v-model="form.distance" :min="0" size="mini" /> km
+        </el-form-item>
+        <el-form-item v-if="form.method == 10" label="最大可配送重量" prop="weight">
+          <el-input-number v-model="form.weight" :precision="2" :min="0" size="mini" /> kg
+        </el-form-item>
+        <el-form-item prop="item">
+          <div style="overflow-x: auto;">
+            <table class="stock-table" cellspacing="0" cellpadding="0">
+              <thead>
+                <tr>
+                  <th style="min-width: 300px;">规则</th>
+                  <th style="min-width: 100px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in form.item" :key="index">
+                  <td>
+                    {{ item.min }} ≤ {{ form.method == 10 ? 'd' : 'w' }} ≤
+                    <el-input-number v-model="item.max" :precision="form.method == 10 ? 0 : 2" :min="0" size="mini" />
+                    {{ form.method == 10 ? 'km' : 'kg' }}，收取配送费
+                    <el-input-number v-model="item.fee" :precision="2" :min="0" size="mini" /> 元
+                  </td>
+                  <td>
+                    <span v-if="index != 0" style="font-size: 20px; cursor: pointer;" @click="removeRow(index)">
+                      <i class="el-icon-delete" />
+                    </span>
+                    <span v-else style="font-size: 20px; cursor: pointer;" @click="addRow()">
+                      <i class="el-icon-circle-plus-outline" />
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input-number v-model="form.sort" :min="0" label="数值越小越靠前" style="width: 200px;" />
           <el-tooltip content="数值越小越靠前" placement="top">
